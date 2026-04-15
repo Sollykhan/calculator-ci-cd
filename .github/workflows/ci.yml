@@ -33,7 +33,16 @@ jobs:
       - name: Run tests
         run: |
           pytest tests
-
+      - name: build Docker image
+        run: |
+            docker build -t my-calculator:${{ github.sha }} .
+      - name: run trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'my-calculator:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
 
 
 
